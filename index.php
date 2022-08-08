@@ -7,7 +7,6 @@ require __DIR__ . "./src/config/Database.php";
 require __DIR__ . "./src/config/ErrorHandler.php";
 
 require __DIR__ . "./src/controllers/TimeController.php";
-
 require __DIR__ . "./src/controllers/OperatorController.php";
 require __DIR__ . "./src/controllers/ProductionLineController.php";
 require __DIR__ . "./src/controllers/PacketController.php";
@@ -24,24 +23,23 @@ header("Content-type: application/json; charset=UTF-8");
 $parts = explode("/", $_SERVER['REQUEST_URI']);
 
 // TODO: ADD API KEY (ENHANCE SECURITY)
-if ($parts[1] !== "digitex" || $parts[2] !== "api") {
-    http_response_code(404);
-    exit();
-}
+// if ($parts[2] !== "api") {
+//     http_response_code(404);
+//     exit();
+// }
 
-// EXAMPLE:     http://localhost/digitex/api/v3/packet/byRFID/e3cfaf19
+// EXAMPLE:     http://localhost/digitex_isa/api/v3/packet/byRFID/e3cfaf19
 //              => $action = operator / $handler = byRFID
 $action = $parts[4] ?? null;
 $handler = $parts[5] ?? null;
 
 // INITIALIZE DB
 // $db = new Database("127.0.0.1", "db_isa", "ISA", "SmarTex2021");
-$db = new Database("127.0.0.1", "etc", "root", "");
+$db = new Database("127.0.0.1", "db_isa", "root", "");
 
 // INITIALIZE MODELS
 $operator = new Operator($db);
 $productionLine = new ProductionLine($db);
-// $packet = new Packet($db);
 $packet = new Packet($db);
 $operation = new Operation($db);
 $monitor = new Monitor($db);

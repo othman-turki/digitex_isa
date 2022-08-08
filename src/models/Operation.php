@@ -12,19 +12,16 @@ class Operation
 
     public function getOperationBySmartBox(string $packetNumber, string $smartBoxName): array | string
     {
-        $operationExist = $this->isOperationExist($packetNumber, $smartBoxName);
+        // $operationExist = $this->isOperationExist($packetNumber, $smartBoxName);
 
-        if ($operationExist) {
-            http_response_code(400);
+        // if ($operationExist) {
+        //     http_response_code(400);
 
-            return "{}";
-        }
+        //     return "{}";
+        // }
 
-        // ETC
-        $sql = "SELECT * FROM gamme WHERE DigiTex LIKE '%$smartBoxName%'";
 
-        // ISA
-        // $sql = "SELECT * FROM gamme WHERE DigiTex LIKE '%$smartBoxName%' AND N_pipelette = '$packetNumber' AND operation_state != 1";
+        $sql = "SELECT * FROM gamme WHERE DigiTex LIKE '%$smartBoxName%' AND N_pipelette = '$packetNumber' AND operation_state != 1";
         // SELECT * FROM `gamme` WHERE DigiTex LIKE 'ISA201-70' AND N_pipelette = "37245840";
 
         $stmt = $this->conn->prepare($sql);
@@ -53,10 +50,6 @@ class Operation
             $op_stmt->execute();
             $op_stmt->closeCursor();
         }
-
-        // echo count($filtred_results) . "\n";
-        // print_r($filtred_results);
-
 
         $result = array(
             'OF' => $filtred_results[0]['OF'],
@@ -90,6 +83,7 @@ class Operation
 
     public function insertOperation(array $data): int
     {
+        $tagRFID = $data["tag_RFID"];
         $packetNumber = $data["packet_number"];
         $operationCode = $data["operation_code"];
         $designation = $data["designation"];
@@ -106,31 +100,40 @@ class Operation
         $sql = "INSERT INTO pack_operation
             (Pack_id, Code_operation, Operation_name, registration_number, Firstname, Lastname, Machine_id, DigiTex, cur_day, cur_time, tps_ope_uni, quantity)
                 VALUES
-            ('$packetNumber', '$operationCode', '$designation', '$operatorRN', '$firstName', '$lastName', '$machineID', '$digitex', '$current_day', '$current_time', '$tps_ope_uni', '$quantity')";
+            ('$packetNumber', '$operationCode', '$designation', '$operatorRN', '$firstName', '$lastName', '$machineID', '$digitex', '$current_day', '$current_time', '$tps_ope_uni', '$quantity');";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
+
+        if (str_contains(strtolower($designation), "contr")) {
+            // echo "yes";
+            $sql2 = "UPDATE controle_packet SET Tag_id = '$tagRFID' WHERE State_Tag = 'here';";
+            $stmt2 = $this->conn->prepare($sql2);
+            $stmt2->execute();
+            $stmt2->closeCursor();
+        }
+
 
         return $stmt->rowCount();
     }
 
-    private function isOperationExist(string $packetNumber, string $smartBoxName): bool
-    {
-        $sql = "SELECT * FROM pack_operation
-                WHERE Pack_id = '$packetNumber' AND DigiTex = '$smartBoxName'";
+    // private function isOperationExist(string $packetNumber, string $smartBoxName): bool
+    // {
+    //     // $sql = "SELECT * FROM pack_operation
+    //     //         WHERE Pack_id = '$packetNumber' AND DigiTex = '$smartBoxName'";
 
-        // $sql = "SELECT * FROM `pack_operation`
-        //             WHERE DigiTex = '$smartBoxName'
-        //             ORDER BY `pack_operation`.`id` DESC
-        //             LIMIT 1";
+    //     $sql = "SELECT * FROM `pack_operation`
+    //                 WHERE DigiTex = '$smartBoxName'
+    //                 ORDER BY `pack_operation`.`id` DESC
+    //                 LIMIT 1";
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetch();
-        $stmt->closeCursor();
+    //     $stmt = $this->conn->prepare($sql);
+    //     $stmt->execute();
+    //     $result = $stmt->fetch();
+    //     $stmt->closeCursor();
 
-        // $result = $result["Pack_id"] === $packetNumber ? $result : [];
+    //     $result = $result["Pack_id"] === $packetNumber ? $result : [];
 
-        return (bool) $result;
-    }
+    //     return (bool) $result;
+    // }
 }
