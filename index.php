@@ -29,7 +29,7 @@ $parts = explode("/", $_SERVER['REQUEST_URI']);
 // }
 
 // EXAMPLE:     http://localhost/digitex_isa/api/v3/packet/byRFID/e3cfaf19
-//              => $action = operator / $handler = byRFID
+//              => $action = packet / $handler = byRFID
 $action = $parts[4] ?? null;
 $handler = $parts[5] ?? null;
 
