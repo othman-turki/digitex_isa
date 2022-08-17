@@ -17,6 +17,9 @@ class PacketController
             case "byRFID":
                 $this->packetByRFID($method);
                 break;
+            case "control":
+                $this->controlPacket($method);
+                break;
         }
     }
 
@@ -31,5 +34,8 @@ class PacketController
                 // code goes here in case of POST Request...
                 break;
         }
+    }
+    private function controlPacket(string $method): void
+    {
     }
 }

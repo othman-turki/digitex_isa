@@ -11,7 +11,7 @@ class OperatorController
 
     public function processRequest(string $handler): void
     {
-        $method = $_SERVER["REQUEST_METHOD"];
+        $method = $_SERVER["REQUEST_METHOD"];  // GET
 
         switch ($handler) {
             case "byRFID":
@@ -34,7 +34,7 @@ class OperatorController
     {
         switch ($method) {
             case "GET":
-                $RFID = explode("/", $_SERVER['REQUEST_URI'])[6] ?? null;
+                $RFID = explode("/", $_SERVER['REQUEST_URI'])[6] ?? null;  // e3cfaf19
                 echo json_encode($this->operator->getOperatorByRFID($RFID));
                 break;
             case "POST":

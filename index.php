@@ -28,7 +28,7 @@ $parts = explode("/", $_SERVER['REQUEST_URI']);
 //     exit();
 // }
 
-// EXAMPLE:     http://localhost/digitex_isa/api/v3/packet/byRFID/e3cfaf19
+// EXAMPLE:     http://localhost/digitex_isa/api/v3/packet/control
 //              => $action = packet / $handler = byRFID
 $action = $parts[4] ?? null;
 $handler = $parts[5] ?? null;
@@ -45,7 +45,7 @@ $operation = new Operation($db);
 $monitor = new Monitor($db);
 
 // INITIALIZE CONTROLLERS
-$timeController = new TimeController;
+// $timeController = new TimeController;
 $operatorController = new OperatorController($operator);
 $productionLineController = new ProductionLineController($productionLine);
 $packetController = new PacketController($packet);
@@ -54,13 +54,13 @@ $monitorController = new MonitorController($monitor);
 
 // ROUTING
 switch ($action) {
-    case "date":
-        $timeController->processRequest($handler);
-        break;
+        // case "date":
+        //     $timeController->processRequest($handler);
+        //     break;
 
-    case "time":
-        $timeController->processRequest($handler);
-        break;
+        // case "time":
+        //     $timeController->processRequest($handler);
+        //     break;
 
     case "operator":
         $operatorController->processRequest($handler);
