@@ -113,7 +113,6 @@ class Operation
             $stmt2->closeCursor();
         }
 
-
         return $stmt->rowCount();
     }
 
