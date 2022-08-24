@@ -20,7 +20,6 @@ class Operation
         //     return "{}";
         // }
 
-
         $sql = "SELECT * FROM gamme WHERE DigiTex LIKE '%$smartBoxName%' AND N_pipelette = '$packetNumber' AND operation_state != 1";
         // SELECT * FROM `gamme` WHERE DigiTex LIKE 'ISA201-70' AND N_pipelette = "37245840";
 
@@ -69,9 +68,16 @@ class Operation
             }
         }
 
+        $opCodesList = explode(',', $result['operation_code']);
+        $opCodesStrList = [];
+        foreach ($opCodesList as $op) {
+            array_push($opCodesStrList, (int)($op / 10));
+        }
+
         return array(
             'OF' => $result['OF'],
             'operation_code' => $result['operation_code'],
+            'operation_code_str' => implode(',', $opCodesStrList),
             'designation' => $result['designation'],
             'machine_id' => $result['machine_id'],
             'QTE_H' => $result['QTE_H'] ?? (string) floor(60 / ((float) $result['tps_ope_uni'])),
