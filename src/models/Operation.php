@@ -68,16 +68,17 @@ class Operation
             }
         }
 
-        $opCodesList = explode(',', $result['operation_code']);
-        $opCodesStrList = [];
-        foreach ($opCodesList as $op) {
-            array_push($opCodesStrList, (int)($op / 10));
-        }
+        // $opCodesList = explode(',', $result['operation_code']);
+        // $opCodesStrList = [];
+        // foreach ($opCodesList as $op) {
+        //     array_push($opCodesStrList, (int)($op));
+        // }
 
         return array(
             'OF' => $result['OF'],
             'operation_code' => $result['operation_code'],
-            'operation_code_str' => implode(',', $opCodesStrList),
+            // 'operation_code_str' => implode(',', $opCodesStrList),
+            'operation_code_str' => $result['operation_code'],
             'designation' => $result['designation'],
             'machine_id' => $result['machine_id'],
             'QTE_H' => $result['QTE_H'] ?? (string) floor(60 / ((float) $result['tps_ope_uni'])),
