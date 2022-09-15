@@ -61,8 +61,7 @@ CREATE TABLE `performances` (
 
 
 -- UPDATE OPERATION STATES TO 0
-UPDATE gamme
-SET operation_state = 0
-WHERE id IN (
-	SELECT id FROM gamme WHERE operation_state = 1
-);
+UPDATE gamme SET operation_state = 0
+-- WHERE id IN (
+-- 	SELECT id FROM gamme WHERE operation_state = 1
+-- );

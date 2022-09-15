@@ -16,22 +16,35 @@ class Operation
 
         // if ($operationExist) {
         //     http_response_code(400);
-
         //     return "{}";
         // }
 
-        $sql = "SELECT * FROM gamme WHERE DigiTex LIKE '%$smartBoxName%' AND N_pipelette = '$packetNumber' AND operation_state != 1";
-        // SELECT * FROM `gamme` WHERE DigiTex LIKE 'ISA201-70' AND N_pipelette = "37245840";
+        // $sql = "SELECT * FROM gamme WHERE DigiTex LIKE '%$smartBoxName%' AND N_pipelette = '$packetNumber' AND operation_state != 1";
+        $sql = "SELECT * FROM gamme WHERE DigiTex LIKE '%$smartBoxName%' AND N_pipelette = '$packetNumber'";
+        // SELECT * FROM `gamme` WHERE DigiTex LIKE '%ETC_01_12%' AND N_pipelette = "0000001" AND operation_state != 1;
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
-        $results = $stmt->fetchAll();
+        $res = $stmt->fetchAll();
         $stmt->closeCursor();
+
+        if (!$res) {
+            http_response_code(400);
+            return "{}";
+        }
+
+        $results = [];
+        for ($i = 0; $i < count($res); $i++) {
+            if ($res[$i]["operation_state"] != 1) {
+                array_push($results, $res[$i]);
+            }
+        }
 
         if (!$results) {
             http_response_code(400);
-
-            return "{}";
+            return array(
+                "error" => "Operation deja effectuee"
+            );
         }
 
         $filtred_results = [];
@@ -81,7 +94,7 @@ class Operation
             'operation_code_str' => $result['operation_code'],
             'designation' => $result['designation'],
             'machine_id' => $result['machine_id'],
-            'QTE_H' => $result['QTE_H'] ?? (string) floor(60 / ((float) $result['tps_ope_uni'])),
+            'QTE_H' => $result['QTE_H'] ?? (string) ceil(60 / ((float) $result['tps_ope_uni'])),
             'tps_ope_uni' => (string) $result['tps_ope_uni'],
             'h_counter' => date("H"),
             'min_counter' => date("i"),
