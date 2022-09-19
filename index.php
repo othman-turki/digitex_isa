@@ -7,6 +7,7 @@ require __DIR__ . "./src/config/Database.php";
 require __DIR__ . "./src/config/ErrorHandler.php";
 
 require __DIR__ . "./src/controllers/TimeController.php";
+require __DIR__ . "./src/controllers/DigiTexController.php";
 require __DIR__ . "./src/controllers/OperatorController.php";
 require __DIR__ . "./src/controllers/ProductionLineController.php";
 require __DIR__ . "./src/controllers/PacketController.php";
@@ -38,6 +39,7 @@ $handler = $parts[5] ?? null;
 $db = new Database("127.0.0.1", "db_isa", "root", "");
 
 // INITIALIZE MODELS
+$digitex = new DigiTex($db);
 $operator = new Operator($db);
 $productionLine = new ProductionLine($db);
 $packet = new Packet($db);
@@ -46,6 +48,7 @@ $monitor = new Monitor($db);
 
 // INITIALIZE CONTROLLERS
 // $timeController = new TimeController;
+$digitexController = new DigiTexController($digitex);
 $operatorController = new OperatorController($operator);
 $productionLineController = new ProductionLineController($productionLine);
 $packetController = new PacketController($packet);
@@ -61,6 +64,10 @@ switch ($action) {
         // case "time":
         //     $timeController->processRequest($handler);
         //     break;
+
+    case "digitex":
+        $digitexController->processRequest($handler);
+        break;
 
     case "operator":
         $operatorController->processRequest($handler);
